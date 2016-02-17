@@ -1,4 +1,5 @@
 'use strict';
+import '../css/main.css';
 
 import axios from 'axios';
 

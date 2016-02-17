@@ -34,14 +34,18 @@
     "webpack": "1.12.13"
   },
   "devDependencies": {
+    "autoprefixer": "6.3.3",
     "babel-core": "6.5.2",
     "babel-loader": "6.2.2",
+    "css-loader": "0.23.1",
     "eslint": "2.1.0",
     "eslint-plugin-babel": "3.1.0",
     "extract-text-webpack-plugin": "1.0.1",
     "html-webpack-plugin": "2.9.0",
     "npm-install-webpack-plugin": "2.0.2",
     "path": "0.12.7",
+    "postcss-loader": "0.8.1",
+    "style-loader": "0.13.0",
     "webpack-dev-middleware": "1.5.1",
     "webpack-hot-middleware": "2.7.1"
   }

@@ -2,7 +2,8 @@
 
 const path = require('path');
 const webpack = require('webpack');
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const NpmInstallPlugin = require('npm-install-webpack-plugin');
 
 var buildPath = path.join(__dirname, 'build');
@@ -30,23 +31,24 @@ module.exports = {
   },
   module: {
     loaders: [
-        {
-          test: /\.jsx?$/,
-          exclude: /(node_modules)/,
-          loader: 'babel',
-          query: {
-            cacheDirectory: true,
-            presets: ['es2015', 'stage-0']
-          }
-        },
-      // {
-      //   test: /\.css$/,
-     //    loader: ExtractTextPlugin.extract('style-loader', 'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
-      // }
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        loader: 'babel',
+        query: {
+          cacheDirectory: true,
+          presets: ['es2015', 'stage-0']
+        }
+      },
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss')
+      }
     ]
   },
+  postcss: [autoprefixer],
   plugins: [
-    // new ExtractTextPlugin('style.css', { allChunk: true }),
+    new ExtractTextPlugin('style.css', { allChunk: true }),
     new NpmInstallPlugin({
       save: true,       // --save
       // saveDev: true,    // --save-dev

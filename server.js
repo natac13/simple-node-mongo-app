@@ -3,10 +3,10 @@
 const express = require('express');
 const path = require('path');
 const indexRouter = require('./app/routes/index');
+const clicksRouter = require('./app/routes/api');
 
 const Promise = require("bluebird");
-const MongoDB = Promise.promisifyAll(require("mongodb"));
-const MongoClient = Promise.promisifyAll(MongoDB.MongoClient);
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -41,26 +41,16 @@ app.use(webpackHotMiddleware(compiler));
 
 const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3300 ;
 
-const ClickHandler = require('./app/controllers/clickHandler.server');
 
 const mongoUrl = 'mongodb://localhost:27017/simple';
-MongoClient.connectAsync(mongoUrl)
-  .then((db) => {
-    const clickHandler = ClickHandler(db);
-    app.use(express.static(path.join(__dirname, './app/assets')));
-    app.use('/', indexRouter);
+mongoose.connect(mongoUrl)
 
-    app.route('/api/clicks')
-      .get(clickHandler.getClicks)
-      .post(clickHandler.addClick)
-      .delete(clickHandler.resetClicks);
+app.use(express.static(path.join(__dirname, './app/assets')));
+app.use('/', indexRouter);
+app.use('/api', clicksRouter);
 
-    app.listen(port, () => {
-      console.log(`Listening on port ${port}...`);
+app.listen(port, () => {
+  console.log(`Listening on port ${port}...`);
 
-    });
-  })
-  .catch((error) => {
-    console.log('There was an error');
-    console.log(error);
-  });
+});
+

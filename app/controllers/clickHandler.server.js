@@ -30,8 +30,26 @@ const clickHandler = (db) => {
 
   }
 
+  const addClick = (req, res) => {
+    clicks.findAndModifyAsync({}, { '_id': 1 }, { $inc: { 'clicks': 1 }})
+      .then(
+        result => res.json(result),
+        error => console.log(error)
+      );
+  }
+
+  const resetClicks = (req, res) => {
+    clicks.updateAsync({}, { 'clicks': 0 })
+      .then(
+        result => res.json(result),
+        error => console.log(error)
+      )
+  }
+
   return {
-    getClicks
+    getClicks,
+    addClick,
+    resetClicks
   }
 }
 

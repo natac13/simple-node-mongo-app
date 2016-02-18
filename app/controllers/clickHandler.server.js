@@ -1,44 +1,38 @@
 'use strict';
 
-const Clicks = require('../models/clicks');
+const Users = require('../models/users');
 
 const clickHandler = () => {
+  const clickProjection = { '_id': false };
 
   const getClicks = (req, res) => {
-    // a projection of how I want the resulting data to come back(look like)
-    // this is simply saying to not include the _id property from the result
-    const clickProjection = { '_id': false };
-
-    Clicks.findOne({}, clickProjection)
-      .exec((err, result) => {
-        if (!!err) { throw err; }
-        if (!!result) {
-          res.json(result);
-        } else {
-          const newDoc = new Clicks({ 'clicks': 0 });
-          newDoc.save((err, doc) => {
-            if (err) { throw err; }
-            res.json(doc)
-          })
-        }
-      })
+    Users.findOne({ 'github.id': req.user.github.id }, clickProjection)
+      .exec()
+        .then(function successExec(result) {
+          res.json(result.numClicks);
+        })
+        .catch(err => console.log(err));
 
   }
 
   const addClick = (req, res) => {
-    Clicks.findOneAndUpdate({}, { $inc: { 'clicks': 1 }})
-      .exec((err, result) => {
-        if (err) { throw err; }
-        res.json(result)
-      });
+    Users.findOneAndUpdate(
+      { 'github.id': req.user.github.id },
+      { $inc: { 'numClicks.clicks': 1 }}
+    )
+      .exec()
+        .then(result => res.json(result.numClicks))
+        .catch(err => console.log(err));
   }
 
   const resetClicks = (req, res) => {
-    Clicks.findOneAndUpdate({}, { 'clicks': 0 })
-      .exec((err, result) => {
-        if (err) { throw err; }
-        res.json(result)
-      });
+    Users.findOneAndUpdate(
+      { 'github.id': req.user.github.id },
+      { 'numClicks.clicks': 0 }
+    )
+      .exec()
+        .then(result => res.json(result.numClicks))
+        .catch(err => console.log(err));
   }
 
   return {

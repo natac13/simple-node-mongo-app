@@ -3,12 +3,35 @@
 const express = require('express');
 const path = require('path');
 const indexRouter = require('./app/routes/index');
-const clicksRouter = require('./app/routes/api');
+
+const passport = require('passport');
+const session = require('express-session');
 
 const Promise = require("bluebird");
 const mongoose = require("mongoose");
+mongoose.Promise = Promise;
 
 const app = express();
+require('dotenv').load();
+require('./app/config/passport')(passport);
+
+/*======================================
+=            Passport Setup            =
+======================================*/
+
+app.use(session({
+  secret: 'superSecret',
+  resave: false, // resave even when no modifications
+  saveUninitialized: true // force a new session to be created and stored
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+/*=====  End of Passport Setup  ======*/
+
 
 /*===============================
 =            Webpack            =
@@ -43,11 +66,11 @@ const port = process.env.NODE_ENV === 'production' ? process.env.PORT : 3300 ;
 
 
 const mongoUrl = 'mongodb://localhost:27017/simple';
-mongoose.connect(mongoUrl)
+mongoose.connect(process.env.MONGO_URI)
 
 app.use(express.static(path.join(__dirname, './app/assets')));
 app.use('/', indexRouter);
-app.use('/api', clicksRouter);
+
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);

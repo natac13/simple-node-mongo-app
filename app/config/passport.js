@@ -29,7 +29,7 @@ module.exports = (passport) => {
   },
   function verifyCallback(token, refreshToken, profile, done) {
     process.nextTick(function () {
-      console.log(User.__proto__)
+      console.log(profile)
       User.findOne({ 'github.id': profile.id })
         .then(function findSuccess(user) {
           if (user) {
@@ -40,7 +40,7 @@ module.exports = (passport) => {
             newUser.github.id = profile.id;
             newUser.github.username = profile.username;
             newUser.github.displayName = profile.displayName;
-            newUser.gitgub.publicRepos = profile._json.public_repos;
+            newUser.github.publicRepos = profile._json.public_repos;
             newUser.numClicks.clicks = 0;
 
             newUser.save()

@@ -12,12 +12,15 @@ const session = require('express-session');
 const Promise = require("bluebird");
 const mongoose = require("mongoose");
 mongoose.Promise = Promise;
+mongoose.connection.on('error', (err) => {
+  console.log(err);
+});
 
 const app = express();
 require('dotenv').load();
+mongoose.connect(process.env.MONGO_URI);
 require('./app/config/passport')(passport);
 
-mongoose.connect(process.env.MONGO_URI);
 
 /*===============================
 =            Webpack            =
@@ -37,7 +40,7 @@ const webpackOptions = {
   noInfo: true,
   // adds color to the terminal
   stats: {
-      colors: true
+    colors: true
   }
 };
 

@@ -1,36 +1,18 @@
 'use strict';
 import '../css/main.css';
+import { ready, request } from '../common/ajax-functions';
 
 import axios from 'axios';
 
-(function() {
+(function () {
   const addButton = document.querySelector('.btn-add');
   const deleteButton = document.querySelector('.btn-delete');
   const clicksDisplay = document.querySelector('.click-amount');
-  const apiUrl = 'http://localhost:3300/api/clicks';
-
-  function ready(fn) {
-    if (typeof fn !== 'funciton') return;
-
-    if (document.readyState === 'complete') {
-      return fn();
-    }
-
-    document.addEventListener('DOMContentLoaded', fn, false);
-  }
-
-  const request = (method, url, callback) => {
-
-    return axios[method](url)
-      .then((result) => {
-        console.log(result.data);
-        if (callback) callback(result.data);
-      })
-  }
+  const apiUrl = 'http://localhost:3300/api/:id/clicks';
 
   const updateClicks = (data) => {
     clicksDisplay.innerHTML = data.clicks;
-  }
+  };
 
   ready(request('get', apiUrl, updateClicks));
 

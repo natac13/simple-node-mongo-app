@@ -10,6 +10,7 @@ const isLoggedIn = (req, res, next) => {
     return next();
   } else {
     res.redirect('/login');
+    // return next()
   }
 }
 
@@ -20,7 +21,7 @@ router.route('/')
 
 router.route('/login')
   .get((req, res) => {
-    res.sendFile(path.join(__dirname, '../pages/login'))
+    res.sendFile(path.join(__dirname, '../pages/login.html'))
   });
 
 router.route('/logout')

@@ -28,32 +28,31 @@ module.exports = (passport) => {
     callbackURL: configAuth.githubAuth.callbackURL
   },
   function verifyCallback(token, refreshToken, profile, done) {
-    process.nextTick(function() {
+    process.nextTick(function () {
+      console.log(User.__proto__)
       User.findOne({ 'github.id': profile.id })
         .then(function findSuccess(user) {
-            if (!!user) {
-              done(null, user)
-            } else {
-              const newUser = new User();
+          if (user) {
+            done(null, user);
+          } else {
+            const newUser = new User();
 
-              newUser.github.id = profile.id;
-              newUser.github.username = profile.username;
-              newUser.github.displayName = profile.displayName;
-              newUser.gitgub.publicRepos = profile._json.public_repos;
-              newUser.numClicks.clicks = 0;
+            newUser.github.id = profile.id;
+            newUser.github.username = profile.username;
+            newUser.github.displayName = profile.displayName;
+            newUser.gitgub.publicRepos = profile._json.public_repos;
+            newUser.numClicks.clicks = 0;
 
-              newUser.save()
-                .then(function saveSuccess() {
-                  return done(null, newUser);
-                })
-                .catch(err => console.log(err));
-            }
-          })
-        .catch(err => console.log(err))
-      })
-    }
+            newUser.save()
+              .then(function saveSuccess() {
+                return done(null, newUser);
+              })
+              .catch(err => console.log(err));
+          }
+        })
+        .catch(err => console.log(err));
+    });
+  }
   ));
 
-
-
-}
+};
